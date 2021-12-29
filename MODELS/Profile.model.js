@@ -30,7 +30,7 @@ const profileSchema = new mongoose.Schema({
     experience:[
         {
             title:{
-                type:Stirng,
+                type:String,
                 required:true
             },
             company:{
