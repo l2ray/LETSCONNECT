@@ -2,11 +2,11 @@ const ProfileSchema = require('../MODELS/Profile.model');
 const userSchema = require('../MODELS/user.model');
 const {validationResult} = require('express-validator/check')
 const profileList = (req,res)=>{
-    return res.status(200).send("Returinig all profiles in the System...")
+    return res.status(200).send("Returinig all profiles in the System...");
 }
 const myProfile = async (req,res)=>{
     try{
-        const curProfile = await ProfileSchema.findOne({user:req.user.id}).populate("users",["name","email"]);
+        const curProfile = await ProfileSchema.findOne({user:req.user.id}).populate("user",["name","email"]);
         console.log(curProfile);
     
         return res.status(200).send("Profile content to be loaded later...");
@@ -70,8 +70,30 @@ const createProfile = async(req,res)=>{
     
 
 }
+
+// Get All Profile in the System
+const allProfile = async(req,res)=>{
+    try {
+        const allPro = await ProfileSchema.find().populate("user",["name","email"]);
+        return res.status(200).json({"Status":"Sucess","data":allPro})
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({"Status":"Error","msg":"Sorry There exists an error in the Server"});
+    }
+}
+const devProfile= async(req,res)=>{
+    try {
+        const curProfile = await ProfileSchema.findOne({user:req.params.uId}).populate("user",["name","email"]);
+        return res.status(200).json({"Status":"Success","data":curProfile});
+    } catch (error) {
+        return res.status(500).json({"Status":"Error","msg":"Sorry There exists an error in the Serverss"});
+    }
+}
 module.exports = {
-    profileList :profileList,
-    myProfile:myProfile,
-    createProfile :createProfile
+    profileList,
+    myProfile,
+    createProfile,
+    allProfile,
+    devProfile,
+    
 }
