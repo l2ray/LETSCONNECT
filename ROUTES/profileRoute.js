@@ -12,6 +12,8 @@ Router.post("/",[[
     check("skills","Skills are required").not().isEmpty()
 ],auth],profileController.createProfile);
 Router.get('/:uId',profileController.devProfile);
+Router.delete("/delete/:uId",profileController.deleteProfile);
+Router.post("/add/experience/:uId",profileController.addExperience);
 module.exports = {
     Router:Router
 };

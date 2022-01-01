@@ -1,6 +1,6 @@
 const ProfileSchema = require('../MODELS/Profile.model');
 const userSchema = require('../MODELS/user.model');
-const {validationResult} = require('express-validator/check')
+const {validationResult} = require('express-validator/check');
 const profileList = (req,res)=>{
     return res.status(200).send("Returinig all profiles in the System...");
 }
@@ -89,11 +89,60 @@ const devProfile= async(req,res)=>{
         return res.status(500).json({"Status":"Error","msg":"Sorry There exists an error in the Serverss"});
     }
 }
+
+const deleteProfile = async(req,res)=>{
+    try {
+        const userToDel = await userSchema.userSchema.findById(req.params.uId);
+        const profileToDel = await ProfileSchema.findOne({user:req.params.uId});
+        if(profileToDel && userToDel){
+            await profileToDel.delete();
+            await userToDel.delete();
+            return res.status(200).json({"Status":"Success","data":"About to delete user."});
+        }
+        else{
+            return res.status(400).json({"Status":"Success","data":"Sorry There is no such profile or user in the System..."});
+        }
+
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({"Status":"Error","msg":"Sorry There exists an error in the server."});
+    }
+}
+
+const addExperience =async(req,res)=>{
+    try {
+        // Router.post("/add/experience/:uId",profileController.addExperience);
+        const {title,company,location,from,to,description} = req.body;
+        const experienceData = {};
+        if(title){experienceData.title = title}
+        if(company){experienceData.company = company}
+        if(from){experienceData.from = from};
+        if(location){experienceData.location = location}
+        if(to){
+            experienceData.to = to;
+            experienceData.current = false;
+        }else{
+            experienceData.current = true;
+        }
+        if(description) {experienceData.description = description}
+        const profileToUpdate = await ProfileSchema.findOne({user:req.params.uId});
+        if(profileToUpdate){
+            profileToUpdate.experience.unshift(experienceData)
+            await profileToUpdate.save();
+        }
+
+        return res.status(200).json({"Status":"Success","msg":""});
+    } catch (error) {
+        return res.status(500).json({"Status":"Error","msg":"Sorry There is no such profile or user in the System..."});
+    }
+}
+
 module.exports = {
     profileList,
     myProfile,
     createProfile,
     allProfile,
     devProfile,
-    
+    deleteProfile,
+    addExperience,
 }
