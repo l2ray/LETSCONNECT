@@ -152,7 +152,52 @@ const deleteExperience = async(req,res)=>{
     }catch(error){
         return res.status(500).json({"Status":"Error","msg":"Sorry There exists an error  in the server."});
     }
-
+}
+const addEducation = async(req,res)=>{
+    try {
+        // utreck university 
+                // Router.post("/add/experience/:uId",profileController.addExperience);
+                const {school,degree,fieldofstudy,from,to,description} = req.body;
+                const eduData = {};
+                if(school){eduData.school = school}
+                if(degree){eduData.degree = degree}
+                if(from){eduData.from = from};
+                if(fieldofstudy){eduData.fieldofstudy = fieldofstudy}
+                if(to){
+                    eduData.to = to;
+                    eduData.current = false;
+                }else{
+                    eduData.current = true;
+                }
+                if(description) {eduData.description = description}
+                const profileToUpdate = await ProfileSchema.findOne({user:req.params.uId});
+                if(profileToUpdate){
+                    profileToUpdate.education.unshift(eduData)
+                    await profileToUpdate.save();
+                }
+        
+                return res.status(200).json({"Status":"Success","msg":""});
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({"Status":"Error","msg":"Sorryyy There exists an error  in the server."});
+    }
+}
+const deleteEducation = async(req,res)=>{
+    try{
+        const userProfile = await ProfileSchema.findOne({user:req.params.uId});
+        if(userProfile){
+            const edu = userProfile.education.filter(e=>{
+                return e.id !== req.params.eId
+            });
+            userProfile.education = edu;
+            await userProfile.save();
+            return res.status(200).json({"Status":"Success","data":userProfile});
+        }else{
+            return res.status(400).json({"Status":"Error","data":"No such User..."});
+        }
+    }catch(error){
+        return res.status(500).json({"Status":"Error","msg":"Sorry There exists an error  in the server."});
+    }
 }
 
 module.exports = {
@@ -163,5 +208,7 @@ module.exports = {
     devProfile,
     deleteProfile,
     addExperience,
-    deleteExperience
+    deleteExperience,
+    addEducation,
+    deleteEducation,
 }
