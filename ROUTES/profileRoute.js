@@ -14,6 +14,7 @@ Router.post("/",[[
 Router.get('/:uId',profileController.devProfile);
 Router.delete("/delete/:uId",profileController.deleteProfile);
 Router.post("/add/experience/:uId",profileController.addExperience);
+Router.delete("/experience/:uId/:eId",profileController.deleteExperience);
 module.exports = {
     Router:Router
 };

@@ -136,6 +136,24 @@ const addExperience =async(req,res)=>{
         return res.status(500).json({"Status":"Error","msg":"Sorry There is no such profile or user in the System..."});
     }
 }
+const deleteExperience = async(req,res)=>{
+    try{
+        const userProfile = await ProfileSchema.findOne({user:req.params.uId});
+        if(userProfile){
+            const experience = userProfile.experience.filter(e=>{
+                return e.id !== req.params.eId
+            });
+            userProfile.experience = experience;
+            await userProfile.save();
+            return res.status(200).json({"Status":"Success","data":userProfile});
+        }else{
+            return res.status(400).json({"Status":"Error","data":"No such User..."});
+        }
+    }catch(error){
+        return res.status(500).json({"Status":"Error","msg":"Sorry There exists an error  in the server."});
+    }
+
+}
 
 module.exports = {
     profileList,
@@ -145,4 +163,5 @@ module.exports = {
     devProfile,
     deleteProfile,
     addExperience,
+    deleteExperience
 }
