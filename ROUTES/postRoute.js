@@ -6,4 +6,5 @@ const auth = require('../MIDWARE/auth.midware');
 
 Router.get("/posts",postController.posts);
 Router.post("/add",[auth,[check("title","Sorry Title is required...").not().isEmpty()]],postController.addPost);
+Router.post("/comment/:pId",[auth,[check("comment","Sorry Coment is required").not().isEmpty()]],postController.postComment);
 module.exports = Router;
