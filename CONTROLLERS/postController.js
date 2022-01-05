@@ -36,15 +36,17 @@ const postComment = async(req,res)=>{
     try {
         console.log("You are in the comment Section...")
         const errorData = validationResult(req);
-        console.log(errorData)
+        
     if(errorData.errors.length > 0){
         return res.status(400).json({"Status":"Error","Data":errorData.errors});
     }
     else{
         console.log("Comment succesfully passed..")
         const postToComment = await PostsSchema.findById(req.params.pId);
+        // return res.status(200).json({postToComment})
         if(postToComment){
-            const userCommenting = await userSchema.userSchema.findById(req.user.id);
+            // const userCommenting = await userShema.userSchema.findById(req.user.id);
+            const userCommenting = await userShema.userSchema.findById(req.user.id);
 
         console.log("Comment succesfully passed..")
             const commentObj = {
@@ -53,7 +55,7 @@ const postComment = async(req,res)=>{
                 name:userCommenting.name,
                 avatar:"Test Avatar"
         }
-        postToComment.comments.shift(commentObj);
+        postToComment.comments.unshift(commentObj);
         await postToComment.save();
         return res.status(200).json({"Status":"Success","Data":"Post Successfully Commented","Data2":postToComment});  
         }
