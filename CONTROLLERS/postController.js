@@ -3,10 +3,31 @@ const userShema = require('../MODELS/user.model');
 const profileSchema = require('../MODELS/Profile.model');
 const {validationResult} = require('express-validator/check');
 const { userSchema } = require('../MODELS/user.model');
-const posts = (req,res)=>{
-    console.log("Returning all posts in the System...");
-    res.status(200).send("Post Returning...")
+
+const posts =async (req,res)=>{
+   try {
+       const posts = await PostsSchema.find().sort({date:-1});
+       return res.status(200).json({"Status":"Success","data":posts});
+   } catch (error) {
+       return res.status(500).json({"Status":"Error","msg":"server Errror"})
+   }
 };
+
+const post = async(req,res)=>{
+    try {
+        const post = await PostsSchema.findById(req.params.pId);
+        if(!post){
+            return res.status(400).json({"Status":"Error","msg":"Sorry no such post for this id."})
+        }
+        return res.status(200).json({"Status":"Success","Data":post});
+    } catch (error) {
+        if(error.kind ==="ObjectId"){
+            return res.status(400).json({"Status":"Error","msg":"Sorry no such post for this id."})
+        }
+        return res.status(500).json({"Status":"Error","data":"Server error..."});
+    }
+}
+
 const addPost = async(req,res)=>{
     try {
         const errors = validationResult(req);
@@ -48,7 +69,7 @@ const postComment = async(req,res)=>{
             // const userCommenting = await userShema.userSchema.findById(req.user.id);
             const userCommenting = await userShema.userSchema.findById(req.user.id);
 
-        console.log("Comment succesfully passed..")
+        console.log("Comment succesfully passed...")
             const commentObj = {
                 user:req.user.id,
                 text:req.body.comment,
@@ -66,12 +87,13 @@ const postComment = async(req,res)=>{
     }
     } catch (error) {
         console.log(error.message);
-        return res.status(500).json({"Status":"Error","Data":"Sorry There exists an error in the server while saving Comment..."})
+        return res.status(500).json({"Status":"Error","Data":"Sorry There exists an error in the server while saving Comment..."});
     }
 }
 
 module.exports = {
     posts,
     addPost,
-    postComment
+    postComment,
+    post
 }
