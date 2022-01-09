@@ -53,6 +53,25 @@ const addPost = async(req,res)=>{
         console.log(error.message);
     }
 }
+const removePost = async(req,res)=>{
+    try {
+        const postId = req.params.pId;
+        const postToDel = await PostsSchema.findById(postId);
+        if(postToDel){
+            await postToDel.remove();
+            return res.status(200).json({"Status":"Success","data":"Post Successffully Deleted."})
+        }
+        else{
+            return res.status(400).json({"Status":"Error","msg":"Sorry no such post for this id."})
+        }
+    } catch (error) {
+        if(error.kind === "ObjectId"){
+            return res.status(400).json({"Status":"Error","msg":"Sorry no such post for this id."})
+        }
+        console.log(error.message)
+        return res.status(500).json({"Status":"Error","data":"Server error..."});
+    }
+}
 const postComment = async(req,res)=>{
     try {
         console.log("You are in the comment Section...")
@@ -90,10 +109,82 @@ const postComment = async(req,res)=>{
         return res.status(500).json({"Status":"Error","Data":"Sorry There exists an error in the server while saving Comment..."});
     }
 }
+const likePost = async(req,res)=>{
+    try {
+        const postId = req.params.pId;
+        const postToLike = await PostsSchema.findById(postId);
+        if(postToLike){
+            let flag = -1;
+            
+            postToLike.like.map(e=>{
+                if(e.user.toString() === req.user.id){
+                    console.log(e.user);
+                    flag = 1;
+                    return;
+                }
+            });
+            if(flag === -1){
+                postToLike.like.push({user:req.user.id});
+                await postToLike.save();
+            }
+           
+            return res.status(200).json({"Status":"Success","data":"Post successfully liked."});
+        }else{
+            return res.status(400).json({"Status":"Error","msg":"Sorry no such post for this id."})
+        }
+        
+    } catch (error) {
+        if(error.kind === "ObjectId"){
+            return res.status(400).json({"Status":"Error","msg":"Sorry no such post for this id."})
+        }
+        return res.status(500).json({"Status":"Error","data":"Server error..."});
+
+    }
+}
+const disLikePost = async(req,res)=>{
+    try {
+        const postId = req.params.pId;
+        const postToLike = await PostsSchema.findById(postId);
+        if(postToLike){
+            let flag = -1;
+            
+            postToLike.like.map(e=>{
+                if(e.user.toString() === req.user.id){
+                    // console.log(e.user);
+                    flag = 1;
+                    return;
+                }
+            });
+            if(flag === 1){
+                const modifiedPost = postToLike.like.filter(e=>{
+                    if(e.user.toString() !== req.user.id){
+                        return e.user;
+                    }
+                });
+                postToLike.like = modifiedPost;
+                await postToLike.save();
+            }
+           
+            return res.status(200).json({"Status":"Success","data":"Post successfully disLiked."});
+        }else{
+            return res.status(400).json({"Status":"Error","msg":"Sorry no such post for this id."})
+        }
+        
+    } catch (error) {
+        if(error.kind === "ObjectId"){
+            return res.status(400).json({"Status":"Error","msg":"Sorry no such post for this id."})
+        }
+        return res.status(500).json({"Status":"Error","data":"Server error..."});
+
+    }
+}
 
 module.exports = {
     posts,
     addPost,
     postComment,
-    post
+    post,
+    removePost,
+    disLikePost,
+    likePost
 }

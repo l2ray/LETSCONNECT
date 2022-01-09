@@ -1,6 +1,7 @@
 {
-    "mongoURI":"mongodb://localhost:27017/letscon",
+    "mongoURI":"mongodb+srv://lot:4472897njieS_!@letsconnect.pvdur.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
     "secretKey":"4472897njieS_!"
     
 }
 //"mongoURI":"mongodb+srv://lot:4472897njieS_!@letsconnect.pvdur.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+//"mongodb://localhost:27017/letscon"

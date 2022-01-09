@@ -24,6 +24,14 @@ const postSchema = new mongoose.Schema({
             }
         }
     ],
+    deslike:[
+        {
+            user:{
+                type:mongoose.Schema.Types.ObjectId,
+                res:"users"
+            }
+        }
+    ],
     comments:[
         {
             user:{
