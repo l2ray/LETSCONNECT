@@ -26,11 +26,11 @@ const login = async(req,res)=>{
                   })
 
             }else{
-                return res.status(400).json({"status":"Error","msg":"Sorry Either your password or Email or Both are wrong, Please Check and confirm that they are correct."})
+                return res.status(201).json({"status":"Error","msg":"Sorry Either your password or Email or Both are wrong, Please Check and confirm that they are correct."})
             }
         }
         else{
-            return res.status(400).json({"status":"Error","msg":"Sorry Either your password or Email or Both are wrong, Please Check and confirm that they are correct."}) 
+            return res.status(201).json({"status":"Error","msg":"Sorry Either your password or Email or Both are wrong, Please Check and confirm that they are correct."}) 
         }
 
     }catch(e){
