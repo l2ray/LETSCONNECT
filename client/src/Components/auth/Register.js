@@ -1,7 +1,9 @@
 import React,{useState} from 'react'
 import axios from 'axios';
+import {connect} from 'react-redux'
+import { setAlert } from '../../actions/alert';
 
-export const Register = () => {
+ const Register = (props) => {
     const [name,setName] = useState("");
     const [email,setEmail] = useState("");
     const [password,setPassword] = useState("");
@@ -28,20 +30,27 @@ export const Register = () => {
     const saveData = async(e)=>{
         try {
             e.preventDefault();
-            const newUser = {
-                "name":name,
-                "email":email,
-                "password":password,
-                "conPass":password2,
+            if(password !== password2){
+              console.log("Passwords do not match","danger")
+              props.setAlert("Passwords do not match","danger")
             }
-            const config = {
-                headers:{
-                    "Content-Type":"application/json"
-                }
+            else{
+              const newUser = {
+                  "name":name,
+                  "email":email,
+                  "password":password,
+                  "conPass":password2,
+              }
+              const config = {
+                  headers:{
+                      "Content-Type":"application/json"
+                  }
+              }
+              const body = JSON.stringify(newUser);
+              const res = await axios.post("/api/user",body,config);
+              console.log(res);
+
             }
-            const body = JSON.stringify(newUser);
-            const res = await axios.post("/api/user",body,config);
-            console.log(res);
         } catch (error) {
             console.log(error.message)
         }
@@ -91,5 +100,7 @@ export const Register = () => {
           Already have an account? <a href="login.html">Sign In</a>
         </p>
       </section>
-    )
-}
+    );
+};
+
+export default connect(null,{setAlert})(Register);
