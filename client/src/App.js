@@ -3,7 +3,7 @@ import './App.css'
 import Landing from './Components/Layouts/Landing';
 import Navbar from './Components/Layouts/Navbar';
 import {BrowserRouter as Router,Routes, Route,Switch} from 'react-router-dom'
-import { Login } from './Components/auth/Login';
+import  Login  from './Components/auth/Login';
 import Register from './Components/auth/Register';
 import {Provider} from 'react-redux'
 import store from './store';

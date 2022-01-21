@@ -1,7 +1,8 @@
 import axios from 'axios';
 import React,{useState} from 'react'
-
-export const Login = () => {
+import { connect } from 'react-redux';
+import { setAlert } from '../../actions/alert';
+ const Login = (props) => {
     const [email,setEmail] = useState("");
     const [password,setPassword] = useState("");
 
@@ -28,7 +29,9 @@ export const Login = () => {
             }
             const body = JSON.stringify(loginData);
             const res = await axios.post("/api/auth",body,config);
-            console.log(res.status);
+            if(res.status === 201){
+              props.setAlert("User Credentials Error","danger");
+            };
             console.log("####################");
             console.log(res); //lo2raymoori@gmail.comm
         } catch (error) {
@@ -38,9 +41,7 @@ export const Login = () => {
     }
     return (
         <section className="container">
-        <div className="alert alert-danger">
-          Invalid credentials
-        </div>
+        
         <h1 className="large text-primary">Sign In</h1>
         <p className="lead"><i className="fas fa-user"></i> Sign into Your Account</p>
         <form className="form" onSubmit={login}>
@@ -71,3 +72,4 @@ export const Login = () => {
       </section>
     )
 }
+export default connect(null,{setAlert})(Login);
